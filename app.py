@@ -8,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, NextPageTemplate, PageBreak
 import plotly.express as px
-
+import psycopg2
 st.set_page_config(page_title="Topic Tickers – Live (All DB Topics)", page_icon="📰", layout="wide")
 
 THEME={
@@ -776,4 +776,5 @@ else:
 
 
     
+
 
