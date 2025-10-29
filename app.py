@@ -268,10 +268,32 @@ if "published_at" in total_df_final.columns:
 results_local = results[results["topic"].str.contains("Pakistan", case=False, na=False)]
 _results_local = results_local.copy()
 _search_videos = search_videos.copy()
-_results_local["topic_key"]=_norm_key(_results_local["topic"])
-_search_videos["matched_term_key"]=_norm_key(_search_videos["matched_term"])
-results_local_1 = (_results_local.merge(_search_videos[["matched_term_key","video_id","search_run_id"]],left_on="topic_key", right_on="matched_term_key", how="inner").loc[:, ["topic","video_id","search_run_id"]].drop_duplicates())
-results_local_final = (results_local_1.merge(videos, on="video_id", how="left").loc[:, ["topic","video_id","search_run_id"] + [c for c in videos.columns if c != "video_id"]].sort_values(by="published_at", ascending=False).drop_duplicates(subset="video_id", keep="first"))
+
+_results_local["topic_key"] = _norm_key(_results_local["topic"])
+_search_videos["matched_term_key"] = _norm_key(_search_videos["matched_term"])
+
+results_local_1 = (
+    _results_local
+    .merge(
+        _search_videos[["matched_term_key", "video_id", "search_run_id"]],
+        left_on="topic_key",
+        right_on="matched_term_key",
+        how="inner"
+    )
+    .loc[:, ["topic", "video_id", "search_run_id"]]
+    .drop_duplicates()
+)
+
+results_local_final = (
+    results_local_1
+    .merge(videos, on="video_id", how="left")
+    # filter: only keep videos whose title also contains 'Pakistan'
+    .query("title.str.contains('Pakistan', case=False, na=False)", engine="python")
+    .loc[:, ["topic", "video_id", "search_run_id"] + [c for c in videos.columns if c != "video_id"]]
+    .sort_values(by="published_at", ascending=False)
+    .drop_duplicates(subset="video_id", keep="first")
+)
+
 
 results_int = results[~results["topic"].str.contains("Pakistan", case=False, na=False)].copy()
 _results_int = results_int.copy()
@@ -776,5 +798,6 @@ else:
 
 
     
+
 
 
