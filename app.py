@@ -347,7 +347,7 @@ def report_card_html_pro(row:dict, idx:int, logos:list, stats:dict, is_local:boo
           <a href="{title_url}" style="color:{THEME['link']};font-weight:800;font-size:1.05rem;text-decoration:none">{html.escape(topic)}</a>
         </div>
         <div style="color:{THEME['ink']};font-weight:600;margin-bottom:6px;">
-            Channels: {ch} • Days: {dy} • Views: {vw} • Likes: {lk} • Comments: {cm} • Shares: {sh} • <span style="color:#ff4d4d;font-weight:800"> DEMP Index: {demp}</span>
+            Channels: {ch} • Days: {dy} • Views: {vw} • Likes: {lk} • Comments: {cm} • Shares: {sh} • <span style="color:#ff4d4d;font-weight:800"> Traction Index: {demp}</span>
         </div>
         <div style="color:{THEME['muted']};font-weight:600;margin-bottom:4px;">Date: {html.escape(date_str)} &nbsp;&nbsp; Hashtags: {html.escape(hashtags)}</div>
         <div style="margin-top:8px;">
@@ -798,6 +798,7 @@ else:
 
 
     
+
 
 
 
