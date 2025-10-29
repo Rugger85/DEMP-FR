@@ -8,6 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, NextPageTemplate, PageBreak
 import plotly.express as px
+import psycopg2
 
 st.set_page_config(page_title="Topic Tickers – Live (All DB Topics)", page_icon="📰", layout="wide")
 
@@ -251,7 +252,7 @@ def is_english_title(text: str) -> bool:
     ratio = len(letters) / max(1, len(t))
     return ratio >= 0.50
 
-engine = create_engine("mysql+pymysql://user_yt:password@localhost:3306/db_yt")
+engine = create_engine("postgresql://neondb_owner:npg_dK3TSAthwBV9@ep-orange-pine-a4qmdhiq-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
 videos = pd.read_sql("SELECT * FROM videos;", engine)
 if "title" in videos.columns: videos["title"] = videos["title"].apply(normalize_text)
 allow = pd.read_sql("SELECT * FROM channels_allowlist;", engine)
@@ -773,5 +774,6 @@ else:
             stats = stats_map_all.get(norm, {})
             st.markdown(report_card_html_pro(r, i, logos, stats, is_local), unsafe_allow_html=True)
             i += 1
+
 
     
