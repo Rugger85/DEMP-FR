@@ -601,7 +601,7 @@ else:
 
     b1, b2, b3, b4 = st.columns(4)
     with b1:
-        st.markdown(_kpi_card_html("Channels in Monitoring", _fmt_num(channels_in_videos)), unsafe_allow_html=True)
+        st.markdown(_kpi_card_html("Monitored Channels", _fmt_num(channels_in_videos)), unsafe_allow_html=True)
     with b2:
         st.markdown(_kpi_card_html("Reports Generated", _fmt_num(reports_generated)), unsafe_allow_html=True)
     with b3:
@@ -798,6 +798,7 @@ else:
 
 
     
+
 
 
 
