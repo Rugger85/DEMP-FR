@@ -1,22 +1,26 @@
+# Core
 streamlit>=1.36
 pandas>=2.2
 numpy>=1.26
 sqlalchemy==2.0.44
-pymysql>=1.1
-plotly>=5.24
-reportlab>=4.2
-langdetect>=1.0.9
 regex>=2024.5.15
-
+langdetect>=1.0.9
 
 # Database connectors
-psycopg2-binary      # for PostgreSQL / Neon
-pymysql              # for MySQL
+psycopg2-binary>=2.9     # PostgreSQL / Neon
+pymysql>=1.1             # MySQL (optional fallback)
 
-# Optional: extras you likely already use
-openpyxl             # Excel I/O
+# Visualization & reports
+plotly>=5.24
+reportlab>=4.2
+
+# Utilities
 requests
 beautifulsoup4
 lxml
+openpyxl                 # Excel I/O
 python-dotenv
+openai>=1.50.0
+
+
 
