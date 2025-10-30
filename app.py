@@ -396,7 +396,7 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     L = landscape(A4)
     frame_land = Frame(lm, bm, L[0]-lm-rm, L[1]-tm-bm, id="landscape")
 
-    bg_path = r"D:\Usama Ahmed\design files - adwatch\final_Design_layout_final-01-01.png"
+    bg_path = "https://raw.githubusercontent.com/Rugger85/DEMP-FR/main/final_Design_layout_final-01-01.png"
 
     def _on_portrait(canvas, doc_obj):
         canvas.setPageSize(A4)
@@ -860,6 +860,7 @@ else:
 
 
     
+
 
 
 
