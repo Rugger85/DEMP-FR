@@ -22,7 +22,7 @@ THEME={
     "bg_grad_from":"#0a0f1f",
     "bg_grad_to":"#0e1b33",
     "card":"#0e1629cc",
-    "ink":"#fff",
+    "ink":"#e6edf3",
     "muted":"#9fb3c8",
     "accent":"#5dd6ff",
     "border":"#1b2740",
@@ -214,7 +214,7 @@ def card_markdown_pro(row:dict, idx:int)->str:
     desc_raw=(r.get("description","") or "").replace("\n"," "); desc=desc_raw[:450]+("…" if len(desc_raw)>450 else "")
     dur=r.get("duration_hms") or "—"; pub=r.get("publishedAt") or "—"; cap="No" if not r.get("hasCaptions") else "Yes"
     img_tag = f'<img src="{chlogo}" referrerpolicy="no-referrer" style="width:22px;height:22px;border-radius:50%;object-fit:cover" />' if chlogo else ""
-    ch_head = "<div style='display:flex;align-items:center;gap:8px;'>"+f"{img_tag}<span style='font-weight:600'>{html.escape(str(ch))}</span></div>"
+    ch_head = "<div style='display:flex;align-items:center;gap:8px;'>"+f"{img_tag}<span style='font-weight:600;color:#ffffff;'>{html.escape(str(ch))}</span></div>"
     title_link = f'<a href="{url}" target="_blank" style="text-decoration:none;color:{THEME["link"]};">{html.escape(str(title))}</a>' if url else html.escape(str(title))
     return f"""<div style="display:flex;gap:8px;margin:10px 0;">
   <div style="width:26px;text-align:center;font-weight:700;font-size:16px;color:{THEME['muted']};">{idx}</div>
@@ -804,6 +804,7 @@ else:
 
 
     
+
 
 
 
