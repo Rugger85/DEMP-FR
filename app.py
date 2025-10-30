@@ -9,6 +9,18 @@ from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, NextPageTemplate, PageBreak
 import plotly.express as px
 import psycopg2
+import io, os, re, base64, html
+import pandas as pd
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    BaseDocTemplate, PageTemplate, Frame,
+    Paragraph, Spacer, Table, TableStyle,
+    NextPageTemplate, PageBreak, Image
+)
+from reportlab.lib.utils import ImageReader
 st.set_page_config(
     page_title="Foreign Media Monitoring - DEMP",
     page_icon="https://raw.githubusercontent.com/Rugger85/DEMP-FR/main/logo.jpeg",
@@ -367,18 +379,6 @@ def report_card_html_pro(row:dict, idx:int, logos:list, stats:dict, is_local:boo
     """
 
 def _pdf_build(topic, header_row, stats_dict, videos_df):
-    import io, os, re, base64, html
-    import pandas as pd
-    from reportlab.lib.pagesizes import A4, landscape
-    from reportlab.lib import colors
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.units import mm
-    from reportlab.platypus import (
-        BaseDocTemplate, PageTemplate, Frame,
-        Paragraph, Spacer, Table, TableStyle,
-        NextPageTemplate, PageBreak, Image
-    )
-    from reportlab.lib.utils import ImageReader
     def _comma(v):
         try:
             n = int(float(v)); return f"{n:,}"
@@ -860,6 +860,7 @@ else:
 
 
     
+
 
 
 
