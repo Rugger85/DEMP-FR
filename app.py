@@ -454,15 +454,14 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
 
     # Top-left report logo on first (portrait) page
     report_logo_url = (header_row or {}).get("report_logo_url")
-    report_logo_url = (header_row or {}).get("report_logo_url")
+    
     if report_logo_url:
         elems.append(_fetch_image(report_logo_url, 32*mm, 12*mm))
         elems.append(Spacer(1, 3*mm))
-        header_table = Table(
-        [[title, logo]],
+        header_table = Table([[title, logo]],
         colWidths=[None, 50*mm],
-        hAlign='LEFT'
-    )
+        hAlign='LEFT')
+        
         header_table.setStyle(TableStyle([
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
             ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
@@ -904,6 +903,7 @@ else:
 
 
     
+
 
 
 
