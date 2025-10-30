@@ -9,7 +9,12 @@ from reportlab.lib.units import mm
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, NextPageTemplate, PageBreak
 import plotly.express as px
 import psycopg2
-st.set_page_config(page_title="Topic Tickers – Live (All DB Topics)", page_icon="📰", layout="wide")
+st.set_page_config(
+    page_title="Topic Tickers – Live (All DB Topics)",
+    page_icon="https://github.com/Rugger85/DEMP-FR/blob/main/logo.jpeg",
+    layout="wide"
+)
+
 
 THEME={
     "bg":"#0a0f1f",
@@ -798,6 +803,7 @@ else:
 
 
     
+
 
 
 
