@@ -223,7 +223,7 @@ def card_markdown_pro(row:dict, idx:int)->str:
     <div style="display:grid;grid-template-columns:230px 1fr 300px;gap:12px;align-items:start;">
       <div>{f'<a href="{url}" target="_blank"><img src="{thumb}" referrerpolicy="no-referrer" style="width:100%;height:auto;border-radius:10px"></a>' if thumb else ''}</div>
       <div>
-        <div style="display:flex;gap:24px;font-weight:600;margin-bottom:6px;color:{THEME['ink']}">
+        <div style="display:flex;gap:24px;font-weight:600;margin-bottom:6px;color:white">
           <div>Views: {views}</div><div>Comments: {comments}</div><div>Likes: {likes}</div><div>⏱ {dur} • {pub}</div><div>Captions: {cap}</div>
         </div>
         <div style="color:{THEME['ink']};line-height:1.35;"><span style="font-weight:700;color:{THEME['desc_label']};">Description:</span> {html.escape(desc)}</div>
@@ -804,6 +804,7 @@ else:
 
 
     
+
 
 
 
