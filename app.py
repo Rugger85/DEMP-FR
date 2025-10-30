@@ -469,7 +469,7 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
                           wordWrap="CJK")  # allows breaking long URLs/titles
 
     header_style = ParagraphStyle("hdr", parent=styles["Normal"], fontName="Helvetica-Bold",
-                                  fontSize=9, textColor=colors.white, align=center, valign=center)
+                                  fontSize=9, textColor=colors.white, alignment=TA_CENTER, leading=11)
 
     rows = [
         [Paragraph("Title", header_style),
@@ -806,6 +806,7 @@ else:
 
 
     
+
 
 
 
