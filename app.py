@@ -367,18 +367,18 @@ def report_card_html_pro(row:dict, idx:int, logos:list, stats:dict, is_local:boo
     """
 
 def _pdf_build(topic, header_row, stats_dict, videos_df):
-import io, os, re, base64, html
-import pandas as pd
-from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate, PageTemplate, Frame,
-    Paragraph, Spacer, Table, TableStyle,
-    NextPageTemplate, PageBreak, Image
-)
-from reportlab.lib.utils import ImageReader
+    import io, os, re, base64, html
+    import pandas as pd
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import (
+        BaseDocTemplate, PageTemplate, Frame,
+        Paragraph, Spacer, Table, TableStyle,
+        NextPageTemplate, PageBreak, Image
+    )
+    from reportlab.lib.utils import ImageReader
     def _comma(v):
         try:
             n = int(float(v)); return f"{n:,}"
@@ -860,6 +860,7 @@ else:
 
 
     
+
 
 
 
