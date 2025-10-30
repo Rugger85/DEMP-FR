@@ -367,15 +367,14 @@ def report_card_html_pro(row:dict, idx:int, logos:list, stats:dict, is_local:boo
     """
 
 def _pdf_build(topic, header_row, stats_dict, videos_df):
-    import io, html, urllib.request
-    import pandas as pd
+    import io
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib import colors
     from reportlab.lib.units import mm
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.platypus import (
         BaseDocTemplate, PageTemplate, Frame,
-        Paragraph, Spacer, Table, TableStyle, Image,
+        Paragraph, Spacer, Table, TableStyle,
         NextPageTemplate, PageBreak
     )
 
@@ -386,56 +385,23 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
         except Exception:
             return str(v or "0")
 
-    def _hex(c):
-        try:
-            return colors.HexColor(c)
-        except Exception:
-            return colors.white
-
-    def _fetch_image(url: str | None, w: float, h: float):
-        if not url:
-            return Spacer(w, h)
-        try:
-            with urllib.request.urlopen(url, timeout=8) as resp:
-                data = resp.read()
-            img = Image(io.BytesIO(data), width=w, height=h)
-            img.hAlign = "LEFT"
-            return img
-        except Exception:
-            return Spacer(w, h)
-
     buf = io.BytesIO()
 
-    # Margins
     lm = rm = 18 * mm
     tm = bm = 16 * mm
 
-    # Frames
-    L = landscape(A4)
-    frame_portrait = Frame(lm, bm, A4[0] - lm - rm, A4[1] - tm - bm, id="portrait")
-    frame_land     = Frame(lm, bm, L[0]  - lm - rm, L[1]  - tm - bm, id="landscape")
-
-    # Background color for all pages
-    page_bg_hex = (header_row or {}).get("page_bg_hex") or (PDF_COLORS.get("card", "#f1f5f9") if "PDF_COLORS" in globals() else "#f1f5f9")
-    page_bg = _hex(page_bg_hex)
-
-    def _draw_bg(c, pagesize):
-        c.saveState()
-        c.setFillColor(page_bg)
-        c.setStrokeColor(page_bg)
-        c.rect(0, 0, pagesize[0], pagesize[1], stroke=0, fill=1)
-        c.restoreState()
-
-    def _on_portrait(c, d):
-        _draw_bg(c, A4); c.setPageSize(A4)
-
-    def _on_land(c, d):
-        _draw_bg(c, L); c.setPageSize(L)
-
     doc = BaseDocTemplate(buf, leftMargin=lm, rightMargin=rm, topMargin=tm, bottomMargin=bm, pagesize=A4)
+
+    frame_portrait = Frame(lm, bm, A4[0] - lm - rm, A4[1] - tm - bm, id="portrait")
+    L = landscape(A4)
+    frame_land = Frame(lm, bm, L[0] - lm - rm, L[1] - tm - bm, id="landscape")
+
+    def _on_portrait(c, d): c.setPageSize(A4)
+    def _on_land(c, d): c.setPageSize(L)
+
     doc.addPageTemplates([
-        PageTemplate(id="Portrait",  frames=[frame_portrait], onPage=_on_portrait),
-        PageTemplate(id="Landscape", frames=[frame_land],     onPage=_on_land),
+        PageTemplate(id="Portrait", frames=[frame_portrait], onPage=_on_portrait),
+        PageTemplate(id="Landscape", frames=[frame_land], onPage=_on_land),
     ])
 
     styles = getSampleStyleSheet()
@@ -452,35 +418,13 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
 
     elems = []
 
-    # Top-left report logo on first (portrait) page
-    report_logo_url = (header_row or {}).get("report_logo_url")
-    
-    if report_logo_url:
-        elems.append(_fetch_image(report_logo_url, 32*mm, 12*mm))
-        elems.append(Spacer(1, 3*mm))
-        header_table = Table([[title, logo]],
-        colWidths=[None, 50*mm],
-        hAlign='LEFT')
-        
-        header_table.setStyle(TableStyle([
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
-            ('TOPPADDING', (0, 0), (-1, -1), 0),
-            ('LEFTPADDING', (0, 0), (-1, -1), 0),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-        ]))
-    
-        elems.append(header_table)
-        elems.append(Spacer(1, 6 * mm))
-    else:
-        elems.append(Paragraph("Central Monitoring Unit – Digital Media Report", h_title))
-        elems.append(Spacer(1, 6 * mm))
+    elems.append(Paragraph("Central Monitoring Unit – Digital Media Report", h_title))
+    elems.append(Spacer(1, 6 * mm))
 
-    topic_text = f"Topic: {html.escape(str(topic))}"
+    topic_text = f"Topic: {html.escape(topic)}"
     elems.append(Paragraph(topic_text, h_topic))
 
-    created = (header_row or {}).get("created_at", "")
+    created = header_row.get("created_at", "")
     try:
         created_str = created.strftime("%Y-%m-%d %H:%M")
     except Exception:
@@ -488,9 +432,9 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     elems.append(Paragraph(f"Date: {created_str}", label))
     elems.append(Spacer(1, 5 * mm))
 
-    ai_insights = html.escape((header_row or {}).get("ai_insights", "") or "")
-    summary     = html.escape((header_row or {}).get("ai_summary", "") or "")
-    hashtags    = html.escape((header_row or {}).get("ai_hashtags", "") or "")
+    ai_insights = html.escape(header_row.get("ai_insights", "") or "")
+    summary = html.escape(header_row.get("ai_summary", "") or "")
+    hashtags = html.escape(header_row.get("ai_hashtags", "") or "")
 
     elems.append(Paragraph("AI Insights", section))
     elems.append(Paragraph(ai_insights, label))
@@ -504,7 +448,6 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
         elems.append(Paragraph("Hashtags", section))
         elems.append(Paragraph(hashtags, tag_style))
 
-    # Switch to landscape for table
     elems.append(NextPageTemplate("Landscape"))
     elems.append(PageBreak())
 
@@ -513,99 +456,59 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     elems.append(Paragraph("Relevant Videos", table_title))
     elems.append(Spacer(1, 2 * mm))
 
-    # Usable width
+    # Usable width on the landscape page
     avail_w = L[0] - lm - rm
 
-    # Columns: Thumb, Logo, Title, Channel, Views, Likes, Comments, Published, URL
-    ratios = [0.10, 0.07, 0.24, 0.14, 0.06, 0.06, 0.07, 0.10, 0.16]
+    # Proportional widths that sum to 1.0 → fills the frame exactly
+    ratios = [0.28, 0.18, 0.07, 0.07, 0.08, 0.12, 0.20]  # Title, Channel, Views, Likes, Comments, Published, URL
     col_widths = [r * avail_w for r in ratios]
 
-    # Colors
-    ink = (PDF_COLORS.get("ink", "#0e1629") if "PDF_COLORS" in globals() else "#0e1629")
-    band = (PDF_COLORS.get("band", "#0e1629") if "PDF_COLORS" in globals() else "#0e1629")
-    band_text = (PDF_COLORS.get("band_text", "#ffffff") if "PDF_COLORS" in globals() else "#ffffff")
-    card = (PDF_COLORS.get("card", "#f1f5f9") if "PDF_COLORS" in globals() else "#f1f5f9")
-    card_alt = (PDF_COLORS.get("card_alt", "#e2e8f0") if "PDF_COLORS" in globals() else "#e2e8f0")
-    border = (PDF_COLORS.get("border", "#cbd5e1") if "PDF_COLORS" in globals() else "#cbd5e1")
-
+    # Wrap long fields
     cell = ParagraphStyle("cell", parent=styles["Normal"], fontName="Helvetica",
-                          fontSize=9.5, leading=12, textColor=_hex(ink), wordWrap="CJK")
+                          fontSize=9.5, leading=12, textColor=colors.HexColor("#0e1629"),
+                          wordWrap="CJK")  # allows breaking long URLs/titles
+
     header_style = ParagraphStyle("hdr", parent=styles["Normal"], fontName="Helvetica-Bold",
                                   fontSize=10, textColor=colors.white)
 
-    # Header row
-    rows = [[
-        Paragraph("Thumb",     header_style),
-        Paragraph("Logo",      header_style),
-        Paragraph("Title",     header_style),
-        Paragraph("Channel",   header_style),
-        Paragraph("Views",     header_style),
-        Paragraph("Likes",     header_style),
-        Paragraph("Comments",  header_style),
-        Paragraph("Published", header_style),
-        Paragraph("URL",       header_style),
-    ]]
+    rows = [
+        [Paragraph("Title", header_style),
+         Paragraph("Channel", header_style),
+         Paragraph("Views", header_style),
+         Paragraph("Likes", header_style),
+         Paragraph("Comments", header_style),
+         Paragraph("Published", header_style),
+         Paragraph("URL", header_style)]
+    ]
 
     vids = videos_df.copy()
-    # Normalize common variants
-    ren = {}
-    if "published_at" not in vids.columns and "publishedAt" in vids.columns:
-        ren["publishedAt"] = "published_at"
-    if "channel_title" not in vids.columns and "channelTitle" in vids.columns:
-        ren["channelTitle"] = "channel_title"
-    if "view_count" not in vids.columns and "viewCount" in vids.columns:
-        ren["viewCount"] = "view_count"
-    if "like_count" not in vids.columns and "likeCount" in vids.columns:
-        ren["likeCount"] = "like_count"
-    if "comment_count" not in vids.columns and "commentCount" in vids.columns:
-        ren["commentCount"] = "comment_count"
-    vids = vids.rename(columns=ren)
-
-    vids["published_at"] = pd.to_datetime(vids.get("published_at"), errors="coerce")
-
-    # Image sizes
-    THUMB_W, THUMB_H = 28*mm, 16*mm
-    LOGO_W,  LOGO_H  = 14*mm, 14*mm
+    vids["published_at"] = pd.to_datetime(vids["published_at"], errors="coerce")
 
     for r in vids.to_dict("records"):
-        title_txt   = html.escape(str(r.get("title", "") or ""))
-        channel_txt = html.escape(str(r.get("channel_title", "") or ""))
-
-        pub = r.get("published_at")
-        pub_str = pub.strftime("%Y-%m-%d %H:%M") if isinstance(pub, pd.Timestamp) and pd.notna(pub) else ""
-
-        thumb_url = r.get("thumbnail") or r.get("thumbnails") or r.get("thumb")
-        logo_url  = r.get("channel_thumb") or r.get("channelThumb") or r.get("channel_logo")
-
-        thumb_img = _fetch_image(thumb_url, THUMB_W, THUMB_H)
-        logo_img  = _fetch_image(logo_url,  LOGO_W,  LOGO_H)
-
         rows.append([
-            thumb_img,
-            logo_img,
-            Paragraph(title_txt, cell),
-            Paragraph(channel_txt, cell),
+            Paragraph(html.escape(str(r.get("title","") or "")), cell),
+            Paragraph(html.escape(str(r.get("channel_title","") or "")), cell),
             _comma(r.get("view_count")),
             _comma(r.get("like_count")),
             _comma(r.get("comment_count")),
-            pub_str,
+            (r["published_at"].strftime("%Y-%m-%d %H:%M") if pd.notna(r["published_at"]) else ""),
             Paragraph(html.escape(str(r.get("url","") or "")), cell),
         ])
 
     tbl = Table(rows, colWidths=col_widths, repeatRows=1)
     tbl.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, 0), _hex(band)),
-        ("TEXTCOLOR",     (0, 0), (-1, 0), _hex(band_text)),
-        ("FONTSIZE",      (0, 0), (-1, -1), 9.5),
-        ("ALIGN",         (4, 1), (6, -1), "RIGHT"),
-        ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
-        ("ROWBACKGROUNDS",(0, 1), (-1, -1), [_hex(card), _hex(card_alt)]),
-        ("TEXTCOLOR",     (0, 1), (-1, -1), _hex(ink)),
-        ("INNERGRID",     (0, 0), (-1, -1), 0.25, _hex(border)),
-        ("BOX",           (0, 0), (-1, -1), 0.25, _hex(border)),
-        ("LEFTPADDING",   (0, 0), (-1, -1), 5),
-        ("RIGHTPADDING",  (0, 0), (-1, -1), 5),
-        ("TOPPADDING",    (0, 0), (-1, -1), 4),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0e1629")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTSIZE", (0, 0), (-1, -1), 9.5),
+        ("ALIGN", (2, 1), (4, -1), "RIGHT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#f1f5f9"), colors.HexColor("#e2e8f0")]),
+        ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#0e1629")),
+        ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#cbd5e1")),
+        ("BOX", (0, 0), (-1, -1), 0.25, colors.HexColor("#cbd5e1")),
+        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
 
@@ -903,6 +806,7 @@ else:
 
 
     
+
 
 
 
