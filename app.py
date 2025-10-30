@@ -611,7 +611,7 @@ def render_detail_page(topic: str):
     else:
         for i,row in enumerate(show.to_dict("records"), start=1):
             st.markdown(card_markdown_pro(row, i), unsafe_allow_html=True)
-    header["report_logo_url"] = "https://raw.githubusercontent.com/Rugger85/DEMP-FR/main/logo.jpeg"
+    header["report_logo_url"] = ""
     pdf_buf = _pdf_build(topic, header, stats, show)
     clicked = st.download_button(
         label="⬇️ Download PDF Report",
@@ -860,6 +860,7 @@ else:
 
 
     
+
 
 
 
