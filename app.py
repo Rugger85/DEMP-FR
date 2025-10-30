@@ -499,8 +499,8 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     tbl.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0e1629")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTSIZE", (0, 0), (-1, -1), 9.5),
-        ("ALIGN", (2, 1), (4, -1), "RIGHT"),
+        ("FONTSIZE", (0, 0), (-1, -1), 8),
+        ("ALIGN", (2, 1), (4, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#f1f5f9"), colors.HexColor("#e2e8f0")]),
         ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#0e1629")),
@@ -806,6 +806,7 @@ else:
 
 
     
+
 
 
 
