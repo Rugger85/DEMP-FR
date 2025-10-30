@@ -455,8 +455,8 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     from reportlab.platypus import Table, TableStyle, Paragraph, Spacer
     from reportlab.lib.units import mm
     
-    report_logo_url = (header or {}).get("logo_url") or (header or {}).get("report_logo_url")
     title = Paragraph("Central Monitoring Unit – Digital Media Report", h_title)
+    logo = None
     if report_logo_url:
         try:
             logo = _fetch_image(report_logo_url)
@@ -910,7 +910,6 @@ else:
 
 
     
-
 
 
 
