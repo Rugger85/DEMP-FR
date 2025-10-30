@@ -22,11 +22,11 @@ THEME={
     "bg_grad_from":"#0a0f1f",
     "bg_grad_to":"#0e1b33",
     "card":"#0e1629cc",
-    "ink":"#e6edf3",
+    "ink":"#fff",
     "muted":"#9fb3c8",
     "accent":"#5dd6ff",
     "border":"#1b2740",
-    "link":"#fff",
+    "link":"#7dc3ff",
     "desc":"#7ee3ff",
     "card_bg":"#0f1a30",
     "desc_label":"#8fd3ff"
@@ -804,6 +804,7 @@ else:
 
 
     
+
 
 
 
