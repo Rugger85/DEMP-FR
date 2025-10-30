@@ -455,11 +455,34 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     # Top-left report logo on first (portrait) page
     report_logo_url = (header_row or {}).get("report_logo_url")
     if report_logo_url:
-        elems.append(_fetch_image(report_logo_url, 32*mm, 12*mm))
-        elems.append(Spacer(1, 3*mm))
+        # Load image with proportional scaling
+        logo = _fetch_image(report_logo_url)
+        logo._restrictSize(40*mm, 20*mm)  # maximum bounds, but keeps ratio automatically
+    
+        title = Paragraph("Central Monitoring Unit – Digital Media Report", h_title)
+    
+        # Table layout: title on left, logo on right
+        header_table = Table(
+            [[title, logo]],
+            colWidths=[None, 50*mm],
+            hAlign='LEFT'
+        )
+        header_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+            ('TOPPADDING', (0, 0), (-1, -1), 0),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ]))
+    
+        elems.append(header_table)
+        elems.append(Spacer(1, 6 * mm))
+    else:
+        elems.append(Paragraph("Central Monitoring Unit – Digital Media Report", h_title))
+        elems.append(Spacer(1, 6 * mm))
 
-    elems.append(Paragraph("Central Monitoring Unit – Digital Media Report", h_title))
-    elems.append(Spacer(1, 6 * mm))
+    
 
     topic_text = f"Topic: {html.escape(str(topic))}"
     elems.append(Paragraph(topic_text, h_topic))
@@ -887,6 +910,7 @@ else:
 
 
     
+
 
 
 
