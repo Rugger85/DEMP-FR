@@ -456,7 +456,7 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     report_logo_url = (header_row or {}).get("report_logo_url")
     if report_logo_url:
         # Load image with proportional scaling
-        logo = _fetch_image(report_logo_url)
+        logo = "https://raw.githubusercontent.com/Rugger85/DEMP-FR/main/logo.jpeg"
         logo._restrictSize(40*mm, 20*mm)  # maximum bounds, but keeps ratio automatically
     
         title = Paragraph("Central Monitoring Unit – Digital Media Report", h_title)
@@ -910,6 +910,7 @@ else:
 
 
     
+
 
 
 
