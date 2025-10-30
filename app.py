@@ -458,6 +458,22 @@ def _pdf_build(topic, header_row, stats_dict, videos_df):
     if report_logo_url:
         elems.append(_fetch_image(report_logo_url, 32*mm, 12*mm))
         elems.append(Spacer(1, 3*mm))
+        header_table = Table(
+        [[title, logo]],
+        colWidths=[None, 50*mm],
+        hAlign='LEFT'
+    )
+    header_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+    ]))
+
+    elems.append(header_table)
+    elems.append(Spacer(1, 6 * mm))
     else:
         elems.append(Paragraph("Central Monitoring Unit – Digital Media Report", h_title))
         elems.append(Spacer(1, 6 * mm))
@@ -888,6 +904,7 @@ else:
 
 
     
+
 
 
 
