@@ -10,7 +10,7 @@ from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, 
 import plotly.express as px
 import psycopg2
 st.set_page_config(
-    page_title="Topic Tickers – Live (All DB Topics)",
+    page_title="Foreign Media Monitoring - DEMP",
     page_icon="https://raw.githubusercontent.com/Rugger85/DEMP-FR/main/logo.jpeg",
     layout="wide"
 )
@@ -804,6 +804,7 @@ else:
 
 
     
+
 
 
 
