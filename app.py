@@ -604,6 +604,45 @@ def render_detail_page(topic: str):
     is_local = ("pakistan" in norm) or ("پاکستان" in topic)
     logos = logos_map_all.get(norm, [])
     stats = stats_map_all.get(norm, {})
+    show = total_df_final[total_df_final["topic"].apply(lambda x: _norm_topic_val(str(x)) == norm)].copy()
+    if show.empty:
+        st.info("No videos found for this topic.")
+        return
+    
+    # --- pick a usable title series, no KeyError ---
+    def _pick_title_series(df: pd.DataFrame) -> pd.Series:
+        if "title" in df.columns:
+            return df["title"].astype(str)
+        for c in ("title_y","title_x","video_title","name","headline","Title","videoTitle"):
+            if c in df.columns:
+                return df[c].astype(str)
+        title_like = [c for c in df.columns if c.lower().startswith("title")]
+        if title_like:
+            return df[title_like[0]].astype(str)
+        return pd.Series([""] * len(df), index=df.index, dtype=str)
+    
+    _title = _pick_title_series(show)
+    
+    # keep a canonical 'title' column for downstream use
+    if "title" not in show.columns:
+        show = show.assign(title=_title)
+    else:
+        show.loc[:, "title"] = _title
+    
+    # --- language filter (now bullet-proof) ---
+    show.loc[:, "__is_english__"] = _title.map(is_english_title)
+    show = show.loc[show["__is_english__"] == True]
+    
+    if is_local:
+        show = show.loc[
+            show["title"].str.contains(r"\bpakistan\b", case=False, na=False)
+            | show["title"].str.contains("پاکستان", case=False, na=False)
+        ]
+    else:
+        show.loc[:, "channel_url_norm"] = _norm_url(show.get("channel_url", ""))
+        allow_set = set(allow["channel_url_norm"].tolist())
+        show = show.loc[show["channel_url_norm"].isin(allow_set)]
+
     rep_row = (total_df_final[total_df_final["topic"].apply(lambda x:_norm_topic_val(str(x))==norm)]
                .sort_values("created_at", ascending=False)
                .head(1)
@@ -884,6 +923,7 @@ else:
 
 
     
+
 
 
 
