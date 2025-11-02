@@ -616,19 +616,20 @@ def render_detail_page(topic: str):
     st.markdown("## AI Reports")
     st.markdown(report_card_html_pro(header, 1, logos, stats, is_local), unsafe_allow_html=True)
     show = total_df_final[total_df_final["topic"].apply(lambda x: _norm_topic_val(str(x)) == norm)].copy()
+    #st.dataframe(show)
     if show.empty:
         st.info("No videos found for this topic.")
         return
-    show["__is_english__"] = show["title"].apply(is_english_title)
+    show["__is_english__"] = show["title_y"].apply(is_english_title)
     show = show[show["__is_english__"] == True]
     if is_local:
-        show = show[show["title"].str.contains(r"\bpakistan\b", case=False, na=False) | show["title"].str.contains("پاکستان", case=False, na=False)]
+        show = show[show["title_y"].str.contains(r"\bpakistan\b", case=False, na=False) | show["title_y"].str.contains("پاکستان", case=False, na=False)]
     else:
         show["channel_url_norm"] = _norm_url(show.get("channel_url", ""))
         allow_set = set(allow["channel_url_norm"].tolist())
         show = show[show["channel_url_norm"].isin(allow_set)]
     show["published_at"] = pd.to_datetime(show["published_at"], errors="coerce")
-    show["__title_key__"] = show["title"].apply(normalize_text)
+    show["__title_key__"] = show["title_y"].apply(normalize_text)
     show = (show
             .sort_values(["published_at", "video_id"], ascending=[False, True])
             .drop_duplicates(subset=["__title_key__", "published_at"], keep="first")
