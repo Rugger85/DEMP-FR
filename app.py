@@ -254,20 +254,34 @@ try:
 except Exception:
     _lang_detect = None
 _ARABIC_URDU_REGEX = re.compile(r'[\u0600-\u06FF]')
+
 def is_english_title(text: str) -> bool:
+    """Safe language filter that never raises and returns True if mostly English."""
     if not isinstance(text, str) or not text.strip():
         return False
     t = text.strip()
-    if _lang_detect is not None:
-        try:
-            return _lang_detect(t) == "en"
-        except Exception:
-            pass
+
+    # Step 1: short-circuit Arabic/Urdu characters
     if _ARABIC_URDU_REGEX.search(t):
         return False
-    letters = re.findall(r'[A-Za-z]', t)
+
+    # Step 2: try langdetect (if loaded)
+    if _lang_detect is not None:
+        try:
+            lang = _lang_detect(t)
+            # Sometimes langdetect returns 'unknown' or empty string
+            if isinstance(lang, str) and lang.lower().startswith("en"):
+                return True
+            if isinstance(lang, str) and lang.lower() in ("ur", "ar", "fa"):
+                return False
+        except Exception:
+            pass  # fall through to heuristic
+
+    # Step 3: fallback heuristic
+    letters = re.findall(r"[A-Za-z]", t)
     ratio = len(letters) / max(1, len(t))
-    return ratio >= 0.50
+    return ratio >= 0.45  # a bit looser threshold
+
 
 engine = create_engine("postgresql://neondb_owner:npg_dK3TSAthwBV9@ep-orange-pine-a4qmdhiq-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
 videos = pd.read_sql("SELECT * FROM videos;", engine)
@@ -870,6 +884,7 @@ else:
 
 
     
+
 
 
 
