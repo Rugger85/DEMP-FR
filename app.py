@@ -276,8 +276,18 @@ allow = pd.read_sql("SELECT * FROM channels_allowlist;", engine)
 search_videos = pd.read_sql("SELECT * FROM search_videos;", engine)
 results = pd.read_sql("SELECT * FROM ai_results;", engine)
 
-total_df = pd.merge(results, search_videos, how="inner", left_on="topic", right_on="matched_term")
-total_df_final = pd.merge(total_df, videos, how="inner", left_on="video_id", right_on="video_id")
+_sv_min = search_videos[["matched_term", "video_id", "search_run_id"]].copy()
+
+_video_cols = [
+    "video_id","title","url","thumbnail","channel_title","channel_thumb",
+    "channel_url","channel_origin","view_count","like_count","comment_count",
+    "published_at","duration_hms","has_captions","channel_subscribers","channel_total_views"
+]
+_video_cols = [c for c in _video_cols if c in videos.columns]
+
+total_df = results.merge(_sv_min, left_on="topic", right_on="matched_term", how="inner")
+total_df_final = total_df.merge(videos[_video_cols], on="video_id", how="inner")
+
 if "created_at" in total_df_final.columns:
     total_df_final["created_at"]=pd.to_datetime(total_df_final["created_at"], errors="coerce")
 if "published_at" in total_df_final.columns:
@@ -860,6 +870,7 @@ else:
 
 
     
+
 
 
 
